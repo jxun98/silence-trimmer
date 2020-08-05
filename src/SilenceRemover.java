@@ -1,5 +1,3 @@
-package silence.remover;
-
 import javax.sound.sampled.*;
 import java.io.DataInputStream;
 import java.io.File;

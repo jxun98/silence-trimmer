@@ -1,5 +1,4 @@
-package silence.remover;
-
+import java.util.ArrayList;
 public class Utility {
 
     public static byte[] removeSilence(byte[] data, boolean isBigEndian) {
@@ -10,11 +9,12 @@ public class Utility {
         }
     }
 
-    private static byte[] removeSilenceBigEndian(byte[] data){
-        return new byte[0];
+    private static byte[] removeSilenceBigEndian(byte[] rawData){
+        ArrayList<Byte> newData = new ArrayList<>();
+        return new byte[12];
     }
 
-    private static byte[] removeSilenceLittleEndian(byte[] data){
+    private static byte[] removeSilenceLittleEndian(byte[] rawData){
         return new byte[0];
     }
 
