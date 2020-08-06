@@ -23,13 +23,13 @@ public class SilenceRemover {
         try {
             // Sets up the appropriate stream classes to take in audio data from file.
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-            DataInputStream dataInputStream = new DataInputStream(audioInputStream);
-
             AudioFormat audioFormat = audioInputStream.getFormat();
 
-            byte[] audioData = Files.readAllBytes(Paths.get(filePath));
-            // Skip file header, which is normally 44 bytes.
-            audioData = Arrays.copyOfRange(audioData, 44, audioData.length+1);
+            int length = (int) (audioInputStream.getFrameLength() * audioFormat.getFrameSize());
+
+            byte[] audioData = new byte[length];
+            DataInputStream dataInputStream = new DataInputStream(audioInputStream);
+            dataInputStream.readFully(audioData);
 
             // Trim the silence from the original byte array and place into new one.
             byte[] newData = Utility.trimSilence(audioData, audioFormat.isBigEndian());

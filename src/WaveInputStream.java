@@ -7,6 +7,4 @@ public class WaveInputStream extends AudioInputStream{
     public WaveInputStream(byte[] data, AudioFormat format) {
         super(new ByteArrayInputStream(data), format, data.length / format.getFrameSize());
     }
-
-
 }
