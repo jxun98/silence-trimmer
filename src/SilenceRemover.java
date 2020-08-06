@@ -25,7 +25,7 @@ public class SilenceRemover {
             byte[] audioData = new byte[(int) (audioInputStream.getFrameLength() * audioFormat.getFrameSize())];
             dataInputStream.readFully(audioData);
 
-            Utility.removeSilence(audioData, audioFormat.isBigEndian());
+            Utility.trimSilence(audioData, audioFormat.isBigEndian());
 
         } catch (UnsupportedAudioFileException e) {
             System.out.println("Sorry, this audio format is currently not supported.");
