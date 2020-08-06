@@ -1,7 +1,13 @@
+import com.sun.media.sound.WaveFileWriter;
+
 import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class SilenceRemover {
 
@@ -21,11 +27,16 @@ public class SilenceRemover {
 
             AudioFormat audioFormat = audioInputStream.getFormat();
 
-            // Byte array length is determined by (length of audio stream in frames) * (bytes per audio frame).
-            byte[] audioData = new byte[(int) (audioInputStream.getFrameLength() * audioFormat.getFrameSize())];
-            dataInputStream.readFully(audioData);
+            byte[] audioData = Files.readAllBytes(Paths.get(filePath));
+            // Skip file header, which is normally 44 bytes.
+            audioData = Arrays.copyOfRange(audioData, 44, audioData.length+1);
 
-            Utility.trimSilence(audioData, audioFormat.isBigEndian());
+            // Trim the silence from the original byte array and place into new one.
+            byte[] newData = Utility.trimSilence(audioData, audioFormat.isBigEndian());
+            String newFilePath = Utility.generateNewFilePath(filePath);
+
+            WaveFileWriter waveFileWriter = new WaveFileWriter();
+            waveFileWriter.write(new WaveInputStream(newData, audioFormat), AudioFileFormat.Type.WAVE, new File(newFilePath));
 
         } catch (UnsupportedAudioFileException e) {
             System.out.println("Sorry, this audio format is currently not supported.");

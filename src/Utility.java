@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Utility {
 
@@ -92,10 +94,38 @@ public class Utility {
         return newData;
     }
 
+    private static int findThreshold(byte[] data) {
+        ArrayList<Short> sampleList = new ArrayList<>();
+
+        for (int i=0; i<data.length-1; i+=2) {
+            short bigHalf = (short) data[i+1];
+            short smallHalf = (short) data[i];
+
+            bigHalf = (short) ((bigHalf & 0xff) << 8);
+            smallHalf = (short) (smallHalf & 0xff);
+
+            short sampleValue = (short) (bigHalf + smallHalf);
+
+            sampleList.add(sampleValue);
+        }
+
+        Collections.sort(sampleList);
+
+        short median;
+
+        if (sampleList.size() % 2 == 0) {
+            median = (short) (((double) sampleList.get(sampleList.size()/2) + (double) sampleList.get(sampleList.size()/2 - 1))/2);
+        } else {
+            median = (short) (sampleList.get(sampleList.size()/2));
+        }
+
+        return median;
+    }
+
     private static int getStartIndexLittleEndian(byte[] data) {
         int index = -1;
 
-        for (int i=0; i<data.length; i+=2) {
+        for (int i=0; i<data.length-1; i+=2) {
             short bigHalf = (short) data[i+1];
             short smallHalf = (short) data[i];
 
@@ -105,7 +135,7 @@ public class Utility {
             short sampleValue = (short) (bigHalf + smallHalf);
 
             // Non-zero sample found, we've reached some sound.
-            if (sampleValue != 0) {
+            if (sampleValue > 0) {
                 index = i;
                 return index;
             }
@@ -128,13 +158,19 @@ public class Utility {
 
             // Non-zero sample found, we've reached some sound.
             // index + 2 as we want to keep this current sample when cutting.
-            if (sampleValue != 0) {
+            if (sampleValue > 0) {
                 index = i+2;
                 return index;
             }
         }
 
         return index;
+    }
+
+    public static String generateNewFilePath(String originalFilePath) {
+        String newFilePath = new StringBuilder(originalFilePath).insert(originalFilePath.length()-4, "_trimmed").toString();
+
+        return newFilePath;
     }
 
 }
