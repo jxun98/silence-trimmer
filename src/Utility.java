@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class Utility {
 
@@ -34,7 +32,7 @@ public class Utility {
 
         int index = -1;
 
-        for (int i=0; i<data.length; i+=2) {
+        for (int i=0; i<data.length-1; i+=2) {
             short bigHalf = (short) data[i];
             short smallHalf = (short) data[i+1];
 
@@ -92,34 +90,6 @@ public class Utility {
         byte[] newData = Arrays.copyOfRange(rawData, startIndex, endIndex);
 
         return newData;
-    }
-
-    private static int findThreshold(byte[] data) {
-        ArrayList<Short> sampleList = new ArrayList<>();
-
-        for (int i=0; i<data.length-1; i+=2) {
-            short bigHalf = (short) data[i+1];
-            short smallHalf = (short) data[i];
-
-            bigHalf = (short) ((bigHalf & 0xff) << 8);
-            smallHalf = (short) (smallHalf & 0xff);
-
-            short sampleValue = (short) (bigHalf + smallHalf);
-
-            sampleList.add(sampleValue);
-        }
-
-        Collections.sort(sampleList);
-
-        short median;
-
-        if (sampleList.size() % 2 == 0) {
-            median = (short) (((double) sampleList.get(sampleList.size()/2) + (double) sampleList.get(sampleList.size()/2 - 1))/2);
-        } else {
-            median = (short) (sampleList.get(sampleList.size()/2));
-        }
-
-        return median;
     }
 
     private static int getStartIndexLittleEndian(byte[] data) {
