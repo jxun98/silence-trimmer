@@ -7,7 +7,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 
-public class SilenceRemover {
+public class SilenceTrimmer {
 
     public static void main(String[] args) {
 
@@ -61,8 +61,8 @@ public class SilenceRemover {
             dataInputStream.readFully(audioData);
 
             // Trim the silence from the original byte array and place into new one.
-            byte[] newData = Utility.trimSilence(audioData, audioFormat.isBigEndian());
-            String newFilePath = Utility.generateNewFilePath(filePath);
+            byte[] newData = AudioProcessor.trimSilence(audioData, audioFormat.isBigEndian());
+            String newFilePath = generateNewFilePath(filePath);
 
             WaveFileWriter waveFileWriter = new WaveFileWriter();
             waveFileWriter.write(new WaveInputStream(newData, audioFormat), AudioFileFormat.Type.WAVE, new File(newFilePath));
@@ -75,6 +75,12 @@ public class SilenceRemover {
             JOptionPane.showMessageDialog(null, "An issue occurred while trying to read the selected file.", "Error", JOptionPane.ERROR_MESSAGE);
             return -1;
         }
+    }
+
+    private static String generateNewFilePath(String originalFilePath) {
+        String newFilePath = new StringBuilder(originalFilePath).insert(originalFilePath.length()-4, "_trimmed").toString();
+
+        return newFilePath;
     }
 
 }

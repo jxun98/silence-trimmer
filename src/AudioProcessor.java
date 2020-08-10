@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class Utility {
+public class AudioProcessor {
 
     public static byte[] trimSilence(byte[] data, boolean isBigEndian) {
         if (isBigEndian) {
@@ -136,11 +136,4 @@ public class Utility {
 
         return index;
     }
-
-    public static String generateNewFilePath(String originalFilePath) {
-        String newFilePath = new StringBuilder(originalFilePath).insert(originalFilePath.length()-4, "_trimmed").toString();
-
-        return newFilePath;
-    }
-
 }
