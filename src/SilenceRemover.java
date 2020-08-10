@@ -29,7 +29,7 @@ public class SilenceRemover {
 
                     int continueResult = JOptionPane.showConfirmDialog(null, "Would you like to trim another file?", "Continue?", JOptionPane.YES_NO_OPTION);
 
-                    if (continueResult == JOptionPane.NO_OPTION) {
+                    if (continueResult == JOptionPane.NO_OPTION || continueResult == JOptionPane.CLOSED_OPTION) {
                         System.exit(0);
                     }
 
@@ -69,7 +69,7 @@ public class SilenceRemover {
 
             return 0;
         } catch (UnsupportedAudioFileException e) {
-            JOptionPane.showMessageDialog(null, "Sorry, this file format is not currently supported.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Sorry, this file format is currently not supported.", "Error", JOptionPane.ERROR_MESSAGE);
             return -1;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "An issue occurred while trying to read the selected file.", "Error", JOptionPane.ERROR_MESSAGE);
