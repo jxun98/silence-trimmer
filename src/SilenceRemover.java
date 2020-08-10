@@ -1,30 +1,57 @@
 import com.sun.media.sound.WaveFileWriter;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class SilenceRemover {
 
     public static void main(String[] args) {
 
-        if (args.length < 1) {
-            System.out.println("Please specify the file path of your audio clip.");
-            System.exit(-1);
+        while (true) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("WAV audio files", "wav");
+            fileChooser.setFileFilter(filter);
+
+            int chooserResult = fileChooser.showOpenDialog(null);
+
+            // Select workflow based upon user's decisions in JFileChooser.
+            switch (chooserResult) {
+                case JFileChooser.APPROVE_OPTION: {
+                    removeSilence(fileChooser.getSelectedFile().getPath());
+
+                    JOptionPane.showMessageDialog(null, "Finished trimming!", "Done", JOptionPane.INFORMATION_MESSAGE);
+
+                    int continueResult = JOptionPane.showConfirmDialog(null, "Would you like to trim another file?", "Continue?", JOptionPane.YES_NO_OPTION);
+
+                    if (continueResult == JOptionPane.NO_OPTION) {
+                        System.exit(0);
+                    }
+
+                    break;
+                }
+                case JFileChooser.ERROR_OPTION: {
+                    JOptionPane.showMessageDialog(null, "An error occurred while trying to grab your file.", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                case JFileChooser.CANCEL_OPTION: {
+                    System.exit(0);
+                    break;
+                }
+            }
         }
+    }
 
-        String filePath = args[0];
-
+    private static void removeSilence(String filePath) {
         try {
             // Sets up the appropriate stream classes to take in audio data from file.
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
             AudioFormat audioFormat = audioInputStream.getFormat();
 
+            // Calculate appropriate length for byte stream array.
             int length = (int) (audioInputStream.getFrameLength() * audioFormat.getFrameSize());
 
             byte[] audioData = new byte[length];
@@ -39,11 +66,10 @@ public class SilenceRemover {
             waveFileWriter.write(new WaveInputStream(newData, audioFormat), AudioFileFormat.Type.WAVE, new File(newFilePath));
 
         } catch (UnsupportedAudioFileException e) {
-            System.out.println("Sorry, this audio format is currently not supported.");
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null, "Sorry, this file format is not currently supported.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
-            System.out.println("There was an issue trying to read the file.");
-            System.exit(-1);
+            JOptionPane.showMessageDialog(null, "An issue occurred while trying to read the selected file.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }
