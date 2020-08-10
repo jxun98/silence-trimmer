@@ -21,9 +21,11 @@ public class SilenceRemover {
             // Select workflow based upon user's decisions in JFileChooser.
             switch (chooserResult) {
                 case JFileChooser.APPROVE_OPTION: {
-                    removeSilence(fileChooser.getSelectedFile().getPath());
+                    int trimResult = removeSilence(fileChooser.getSelectedFile().getPath());
 
-                    JOptionPane.showMessageDialog(null, "Finished trimming!", "Done", JOptionPane.INFORMATION_MESSAGE);
+                    if (trimResult == 0) {
+                        JOptionPane.showMessageDialog(null, "Finished trimming!", "Done", JOptionPane.INFORMATION_MESSAGE);
+                    }
 
                     int continueResult = JOptionPane.showConfirmDialog(null, "Would you like to trim another file?", "Continue?", JOptionPane.YES_NO_OPTION);
 
@@ -45,7 +47,7 @@ public class SilenceRemover {
         }
     }
 
-    private static void removeSilence(String filePath) {
+    private static int removeSilence(String filePath) {
         try {
             // Sets up the appropriate stream classes to take in audio data from file.
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
@@ -65,10 +67,13 @@ public class SilenceRemover {
             WaveFileWriter waveFileWriter = new WaveFileWriter();
             waveFileWriter.write(new WaveInputStream(newData, audioFormat), AudioFileFormat.Type.WAVE, new File(newFilePath));
 
+            return 0;
         } catch (UnsupportedAudioFileException e) {
             JOptionPane.showMessageDialog(null, "Sorry, this file format is not currently supported.", "Error", JOptionPane.ERROR_MESSAGE);
+            return -1;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "An issue occurred while trying to read the selected file.", "Error", JOptionPane.ERROR_MESSAGE);
+            return -1;
         }
     }
 
