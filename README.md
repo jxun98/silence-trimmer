@@ -12,12 +12,14 @@ If the provided .jar file doesn't do anything, you can always compile the applic
 
 If you would like to compile the program in the command line, I would cd into the src folder and run the following (I use a Windows machine, please refer to the equivalent for other operating systems):
 
-**javac SilenceTrimmer.java
-java SilenceTrimmer**
+**javac SilenceTrimmer.java**
+
+**java SilenceTrimmer**
 
 If you would like to create your own .jar file, you could run the following as well (again within the src folder):
-**javac SileceTrimmer.java
-jar cmvf ../META-INF/MANIFEST.MF SilenceTrimmer.jar *.class**
+**javac SileceTrimmer.java**
+
+**jar cmvf ../META-INF/MANIFEST.MF SilenceTrimmer.jar *.class**
 
 ## Notes
 For trimming this application currently requires aboslute silence, so if any noise is detected the application will trim early. In the future I may incorporate noise profiling to help with silence detection which will allow the application to be more dynamic.
