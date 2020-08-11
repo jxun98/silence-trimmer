@@ -18,7 +18,7 @@ _java SilenceTrimmer_
 
 If you would like to create your own .jar file, you could run the following as well (again within the src folder):
 
-_javac SileceTrimmer.java_
+_javac SilenceTrimmer.java_
 
 _jar cmvf ../META-INF/MANIFEST.MF SilenceTrimmer.jar *.class_
 
